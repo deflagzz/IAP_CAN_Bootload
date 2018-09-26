@@ -65,7 +65,7 @@ void IAP_BootLoad_UpData(void);
 
 //BootLoad³ÌÐòCANÖÐ¶ÏÄÚ
 void IAP_BootLoad_CAN_RX(CanRxMsg temp_CAN_Msg);
-
+void IAP_CAN__Init_Transformation(void);
 
 
 

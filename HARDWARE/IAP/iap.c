@@ -266,7 +266,7 @@ void IAP_BootLoad_UpData(void)
 		}
 		else 									
 		{
-			g_iap.flag_Recive_Bin = 3;				//非FLASH应用程序,无法执行
+			g_iap.flag_Recive_Bin = 3;		//非FLASH应用程序,无法执行
 		}				
 	}
 	
@@ -327,7 +327,29 @@ void IAP_BootLoad_CAN_RX(CanRxMsg temp_CAN_Msg)
 }
 
 
+void IAP_CAN__Init_Transformation(void)
+{
+	u8 temp[8]={0};
+	
+	while(1)
+	{
+		//默认端口初始化CAN
+		CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,0);		//默认,波特率500Kbps 
+		if(IAP_Can_Send_Msg(1,temp,8))		//出错
+		{
+			CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,1);	//重映射,波特率500Kbps 
+			if(!IAP_Can_Send_Msg(1,temp,8))	
+			{
+				break;						//正确跳出
+			}
+		}	
+		else
+		{
+			break;							//正确跳出
+		}
+	}
 
+}
 
 
 

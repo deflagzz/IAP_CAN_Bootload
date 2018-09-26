@@ -56,7 +56,8 @@ u8 g_UT_CAN_ID = 0 ;
 //则波特率为:36M/((8+9+1)*4)=500Kbps
 //返回值:0,初始化OK;
 //    其他,初始化失败; 
-u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
+//Remap_type 0:默认引脚 1:重映射
+u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode,u8 Remap_type)
 { 
 	GPIO_InitTypeDef 		GPIO_InitStructure; 
 	CAN_InitTypeDef        	CAN_InitStructure;
@@ -65,18 +66,36 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
 	NVIC_InitTypeDef  		NVIC_InitStructure;
 #endif
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能PORTA时钟	                   											 
+	if(!Remap_type)	//CAN端口默认PA11和PA12
+	{
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能PORTA时钟	                   											 
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);//使能CAN1时钟	
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽
+		GPIO_Init(GPIOA, &GPIO_InitStructure);			//初始化IO
 
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);//使能CAN1时钟	
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	//上拉输入
+		GPIO_Init(GPIOA, &GPIO_InitStructure);			//初始化IO	
+	}
+	else			//CAN端口重映射为PB8和PB9
+	{
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);//使能PORTA时钟	                   											 
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);//使能CAN1时钟	
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽
+		GPIO_Init(GPIOB, &GPIO_InitStructure);			//初始化IO
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽
-	GPIO_Init(GPIOA, &GPIO_InitStructure);			//初始化IO
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	//上拉输入
+		GPIO_Init(GPIOB, &GPIO_InitStructure);			//初始化IO	
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	//上拉输入
-	GPIO_Init(GPIOA, &GPIO_InitStructure);			//初始化IO
+		GPIO_PinRemapConfig(GPIO_Remap1_CAN1, ENABLE);//端口重映射	
+	}
+
+	
 
 	//CAN单元设置
 	CAN_InitStructure.CAN_TTCM=DISABLE;			//非时间触发通信模式  
@@ -116,7 +135,8 @@ u8 CAN_Mode_Init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode)
 #endif
 	return 0;
 }   
- 
+
+
 #if CAN_RX0_INT_ENABLE	//使能RX0中断
 //中断服务函数			    
 //0:操作完成
