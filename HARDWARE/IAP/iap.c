@@ -127,7 +127,7 @@ u8 check_data(u8 *pBuf ,u16 pBufSize)	//1:成功 0:错误
 2.RunMode
 	运行模式：01:BootLoader 
 			  02:APP*/
-void Send_response(u8 Can_ID,u8 Byte1,u8 Byte6,u8 Byte7,u8 Byte8)	//发送响应
+u8 Send_response(u8 Can_ID,u8 Byte1,u8 Byte6,u8 Byte7,u8 Byte8)	//发送响应
 {
 	u8 temp[8]={0};
 
@@ -142,7 +142,7 @@ void Send_response(u8 Can_ID,u8 Byte1,u8 Byte6,u8 Byte7,u8 Byte8)	//发送响应
 	temp[6] = Byte7;					//设备类型
 	temp[7] = Byte8;					//运行模式 01:BootLoader  02:APP
 
-	IAP_Can_Send_Msg(Can_ID,temp,8);
+	return IAP_Can_Send_Msg(Can_ID,temp,8);
 }
 
 
@@ -150,7 +150,6 @@ void IAP_BootLoad_Init(void)	//上电等待更新固件的延时
 {
 	u8 led_num=0;
 	CRC32TableCreate();				//CRC校验的表
-	Send_response(MCU2PC_Rend_device_info,0x81,0,0,1);	//告诉上位机设备信息
 	led_num = iap_wait_updata_time/50;
 	while(led_num--)
 	{
@@ -326,19 +325,22 @@ void IAP_BootLoad_CAN_RX(CanRxMsg temp_CAN_Msg)
 	}
 }
 
+//向上位机发送设备信息
+u8 IAP_Send_Device_ino(void)				//0:成功
+{
+	return Send_response(MCU2PC_Rend_device_info,0x81,0,0,1);
+}
 
 void IAP_CAN__Init_Transformation(void)
 {
-	u8 temp[8]={0};
-	
 	while(1)
 	{
 		//默认端口初始化CAN
 		CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,0);		//默认,波特率500Kbps 
-		if(IAP_Can_Send_Msg(1,temp,8))		//出错
+		if(IAP_Send_Device_ino())			//出错
 		{
 			CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,1);	//重映射,波特率500Kbps 
-			if(!IAP_Can_Send_Msg(1,temp,8))	
+			if(!IAP_Send_Device_ino())	
 			{
 				break;						//正确跳出
 			}

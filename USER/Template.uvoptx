@@ -148,56 +148,7 @@
           <Name>-T0</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>94</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134222060</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\HARDWARE\IAP\iap.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\iap\../HARDWARE/IAP/iap.c\94</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>95</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134222068</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\HARDWARE\IAP\iap.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\iap\../HARDWARE/IAP/iap.c\95</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>634</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134220054</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\FWLIB\STM32F10x_FWLib\src\stm32f10x_can.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\iap\../FWLIB/STM32F10x_FWLib/src/stm32f10x_can.c\634</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
