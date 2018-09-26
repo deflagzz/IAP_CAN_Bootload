@@ -331,8 +331,10 @@ u8 IAP_Send_Device_ino(void)				//0:成功
 	return Send_response(MCU2PC_Rend_device_info,0x81,0,0,1);
 }
 
-void IAP_CAN__Init_Transformation(void)
+void IAP_CAN_Remap_Init(void)
 {
+	u8 check_time=0;
+
 	while(1)
 	{
 		//默认端口初始化CAN
@@ -349,8 +351,14 @@ void IAP_CAN__Init_Transformation(void)
 		{
 			break;							//正确跳出
 		}
-	}
-
+		
+		check_time++;
+		if(check_time > 100)
+		{
+			break;
+		}
+		delay_ms(10);
+	}			
 }
 
 
