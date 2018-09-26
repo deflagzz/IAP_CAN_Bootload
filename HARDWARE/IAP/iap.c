@@ -150,14 +150,14 @@ void IAP_BootLoad_Init(void)	//上电等待更新固件的延时
 {
 	u8 led_num=0;
 	CRC32TableCreate();				//CRC校验的表
-	led_num = iap_wait_updata_time/50;
+	led_num = iap_wait_updata_time/10;
 	while(led_num--)
 	{
 		if(g_iap.flag_RX_ == 1)
 		{
 			break;
 		}
-		delay_ms(50);
+		delay_ms(10);
 	}
 
 }
@@ -352,8 +352,9 @@ void IAP_CAN_Remap_Init(void)
 			break;							//正确跳出
 		}
 		
+		//两次CAN初始化约为10ms,20*100=2000ms
 		check_time++;
-		if(check_time > 100)
+		if(check_time > 100)	
 		{
 			break;
 		}

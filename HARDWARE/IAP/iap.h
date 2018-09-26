@@ -10,7 +10,7 @@
 #define CAN_RX_BUFF_LEN			1024+IAP_CRC_byte_len			//1K或者2KSRAM缓存CAN中断的数据,根据MCU的FLASH大小决定	
 
 #define iap_time 				100						//10ms为单位
-#define iap_wait_updata_time 	1000
+#define iap_wait_updata_time 	100						//1ms为单位
 #define iap_start_updata_LEN 	CAN_RX_BUFF_LEN
 
 #define PC2MCU_Rend_device_info 0x7D
