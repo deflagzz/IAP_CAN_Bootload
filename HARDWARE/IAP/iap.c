@@ -318,9 +318,7 @@ void IAP_BootLoad_CAN_RX(CanRxMsg temp_CAN_Msg)
 				g_iap.RX_data_len++;	
 				g_iap.APP_RX_len++;			
 
-			}
-
-					
+			}					
 		}			
 	}
 }
@@ -333,31 +331,50 @@ u8 IAP_Send_Device_ino(void)				//0:成功
 
 void IAP_CAN_Remap_Init(void)
 {
-	u8 check_time=0;
-
+	//u8 check_time=0;
 	while(1)
 	{
-		//默认端口初始化CAN
-		CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,0);		//默认,波特率500Kbps 
-		if(IAP_Send_Device_ino())			//出错
+		STMFLASH_Read(FLASH_APP1_ADDR-2,&g_iap.CAN_PIN_Remap,1);
+		if(g_iap.CAN_PIN_Remap == 1)			//默认引脚
 		{
-			CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,1);	//重映射,波特率500Kbps 
-			if(!IAP_Send_Device_ino())	
+			CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,0);	 //默认,波特率500Kbps 			
+			break;	
+		}
+		else if(g_iap.CAN_PIN_Remap == 2)		//重映射
+		{
+			CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,1);	//重映射,波特率500Kbps
+			break;	
+		}
+		else									//未知配置
+		{
+			//默认端口初始化CAN
+			CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,0);		//默认,波特率500Kbps 
+			if(IAP_Send_Device_ino())			//出错
 			{
-				break;						//正确跳出
-			}
-		}	
-		else
-		{
-			break;							//正确跳出
+				CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,1);	//重映射,波特率500Kbps 
+				if(!IAP_Send_Device_ino())	
+				{
+					g_iap.CAN_PIN_Remap = 2;	//映射引脚
+					STMFLASH_Write(FLASH_APP1_ADDR-2,&g_iap.CAN_PIN_Remap,1);
+					break;						//正确跳出
+				}
+			}	
+			else
+			{
+				g_iap.CAN_PIN_Remap = 1;		//默认引脚
+				STMFLASH_Write(FLASH_APP1_ADDR-2,&g_iap.CAN_PIN_Remap,1);
+				break;							//正确跳出
+			}	
+			
 		}
-		
+
+		//超时退出
 		//两次CAN初始化约为10ms,20*100=2000ms
-		check_time++;
-		if(check_time > 100)	
-		{
-			break;
-		}
+		//check_time++;
+		//if(check_time > 100)	
+		//{
+		//	break;
+		//}
 		delay_ms(10);
 	}			
 }

@@ -20,7 +20,7 @@
 #define MCU2PC_IAP 				0x7E
 
 
-#define  g_STM32_96_ID 	0x17AADB73	//可做加密处理
+#define  g_STM32_96_ID 			0x17AADB73	//可做加密处理
 
 
 
@@ -45,7 +45,7 @@ typedef struct
 	u8  flag_Recive_Bin;
 	u8	OK_Recive;
 	u32 Flash_write_address;	
-
+	u16  CAN_PIN_Remap;			//CAN引脚映射标志存入bootload的flash最后一个字节
 
 }stm32_iap;
 
