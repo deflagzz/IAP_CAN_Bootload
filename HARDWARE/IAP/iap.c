@@ -332,8 +332,11 @@ u8 IAP_Send_Device_ino(void)				//0:成功
 void IAP_CAN_Remap_Init(void)
 {
 	//u8 check_time=0;
+	#if 0
 	while(1)
 	{
+		
+		
 		STMFLASH_Read(FLASH_APP1_ADDR-2,&g_iap.CAN_PIN_Remap,1);
 		if(g_iap.CAN_PIN_Remap == 1)			//默认引脚
 		{
@@ -367,7 +370,6 @@ void IAP_CAN_Remap_Init(void)
 			}	
 			
 		}
-
 		//超时退出
 		//两次CAN初始化约为10ms,20*100=2000ms
 		//check_time++;
@@ -376,7 +378,14 @@ void IAP_CAN_Remap_Init(void)
 		//	break;
 		//}
 		delay_ms(10);
-	}			
+		
+		
+	}
+	#endif	
+	
+	//默认,波特率500Kbps 				
+	CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,4,CAN_Mode_Normal,0);	 
+
 }
 
 
